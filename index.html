@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Calculator</title>
+<style>
+body {
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: black;
+  color: #d0ff00;
+  text-transform: uppercase;
+}
+.calc-box {
+  width: 220px;
+  margin: 50px auto;
+  background-color: #1a1a1a;
+  padding: 15px;
+  border: 2px solid #00ff41;
+  box-shadow: 0 0 15px #00ff41;
+  border-radius: 8px;
+}
+ 
+#result {
+  width: 200px;
+  height: 40px;
+  font-size: 20px;
+  text-align: right;
+  margin-bottom: 10px;
+  background-color: #000;
+  color: #00ff41;
+  border: 1px solid #00ff41;
+  font-family: 'Courier New', Courier, monospace;
+  text-shadow: 0 0 5px #00ff41;
+  padding-right: 5px;
+  box-sizing: border-box;
+}
+button {
+  width: 45px;
+  height: 45px;
+  font-size: 16px;
+  margin: 3px;
+  cursor: pointer;
+  background-color: #000;
+  color: #00ff41;
+  border: 1px solid #00ff41;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+button:hover {
+  background-color: #00ff41;
+  color: #000;
+  box-shadow: 0 0 10px #00ff41;
+}
+.btn-ctrl {
+  width: 96px; /* AC and DEL buttons take two slots */
+  background-color: #000;
+  color: #ff3333;
+  border: 1px solid #ff3333;
+}
+.btn-ctrl:hover {
+  background-color: #ff3333;
+  color: #000;
+  box-shadow: 0 0 10px #ff3333;
+}
+</style>
+</head>
+<body>
+
+<h2>System.Terminal_Calc</h2>
+
+<div class="calc-box">
+  <input type="text" id="result" readonly placeholder="0">
+  <br>
+
+  <button class="btn" data-val="7">7</button>
+  <button class="btn" data-val="8">8</button>
+  <button class="btn" data-val="9">9</button>
+  <button class="btn" data-val="/">/</button>
+  <br>
+
+  <button class="btn" data-val="4">4</button>
+  <button class="btn" data-val="5">5</button>
+  <button class="btn" data-val="6">6</button>
+  <button class="btn" data-val="*">*</button>
+  <br>
+
+  <button class="btn" data-val="1">1</button>
+  <button class="btn" data-val="2">2</button>
+  <button class="btn" data-val="3">3</button>
+  <button class="btn" data-val="-">-</button>
+  <br>
+
+  <button class="btn" data-val="0">0</button>
+  <button class="btn" data-val=".">.</button>
+  <button id="equal-btn">=</button>
+  <button class="btn" data-val="+">+</button>
+  <br>
+
+  <button id="clear-btn" class="btn-ctrl">AC</button>
+  <button id="del-btn" class="btn-ctrl">DEL</button>
+
+</div>
+
+<script>
+  const display = document.getElementById("result");
+
+  // Handle button click events
+  document.querySelectorAll('.btn').forEach(button => {
+    button.addEventListener('click', () => appendValue(button.dataset.val));
+  });
+
+  document.getElementById('clear-btn').addEventListener('click', () => display.value = "");
+  document.getElementById('del-btn').addEventListener('click', () => display.value = display.value.slice(0, -1));
+  document.getElementById('equal-btn').addEventListener('click', calculate);
+
+  // Handle keyboard support
+  document.addEventListener('keydown', (e) => {
+    if (/[0-9+\-*/.]/.test(e.key)) appendValue(e.key);
+    if (e.key === 'Enter') calculate();
+    if (e.key === 'Backspace') display.value = display.value.slice(0, -1);
+    if (e.key === 'Escape') display.value = "";
+  });
+
+  function appendValue(val) {
+    display.value += val;
+  }
+
+  function calculate() {
+    try {
+      // Allow only valid mathematical characters for safety
+      const sanitizedInput = display.value.replace(/[^-+*/.0-9]/g, '');
+      if (sanitizedInput) {
+        // Use Function() instead of eval() to avoid security warnings
+        display.value = new Function('return ' + sanitizedInput)();
+      }
+    } catch (err) {
+      display.value = "Error";
+    }
+  }
+</script>
+
+</body>
+</html>
+ 
